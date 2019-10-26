@@ -26,20 +26,20 @@ var success = async function (data) {
 	
 	console.log(text);
 	var data = []
+	var overall_text = "";
 	for (var i = 0; i < text.length; i++) {
+		overall_text += text[i];
 		data[i] = analyze(text[i]);
-	}
-	Promise.all(data).then(result => console.log(result));
-		
-	// var output = {
-	// 	overall_score : 0,
-	// 	overall_magnitude : 0,
-	// 	data : await Promise.all(data)
-	// }
-
-	// console.log(output);
-
+	}	
 	
+	var overall_data = await analyze(overall_text);
+	var output = {
+		overall_score : overall_data.score,
+		overall_magnitude : overall_data.magnitude,
+		data : await Promise.all(data)
+	}
+
+	console.log(output);
 }
 
 // Language analysis, returns an object containing the text, sentiment score, and sentiment magnitude
@@ -59,22 +59,9 @@ async function analyze(text) {
 				magnitude: response.documentSentiment.magnitude
 			}
 			return obj;
-
-			// return entities.filter(
-			// 	entity => entity.name == 'JetBlue'
-			// ).map(entity => {
-			// 		var obj = {
-			// 			text: text,
-			// 			score: entity.sentiment.score,
-			// 			magnitude: entity.sentiment.magnitude
-			// 		}
-			// 		return obj;
-			// 	}
-			// )[0];
 		});
 }
 
-//
 var Twitter = require('twitter-node-client').Twitter;
 
 //Twitter API config
@@ -87,5 +74,5 @@ var config = {
 
 var twitter = new Twitter(config);
 
-twitter.getSearch({'q':'JetBlue','count': 10, 'tweet_mode': 'extended'}, error, success);
-//success(test_json);
+// twitter.getSearch({'q':'JetBlue','count': 10, 'tweet_mode': 'extended', 'lang': 'en'}, error, success);
+success(test_json);
