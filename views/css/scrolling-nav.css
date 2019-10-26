@@ -1,0 +1,102 @@
+/*!
+ * Start Bootstrap - Scrolling Nav (https://startbootstrap.com/template-overviews/scrolling-nav)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-scrolling-nav/blob/master/LICENSE)
+ */
+
+ 
+ @import "/fonts/index.css";
+
+
+header {
+  padding: 100px 0 100px 100px;
+}
+
+.title {
+  margin-top: -30vh ;
+}
+
+nav {
+  font-family: Manrope;
+  font-weight: 400;
+}
+
+.navbar-brand{
+  font-family: Manrope;
+  font-weight: 500;
+}
+
+.inputbg {
+
+  border-radius: 5px;
+  background-color: white;
+  position: relative;
+  margin: 3% 5% 5% 5%;
+  padding: 4%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.inputbg:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+body{
+  background-color: #F2F2F2;
+}
+
+form {
+  font-family: Manrope;
+  font-weight: 600;
+}
+
+.col-sm-10 {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  font-size: 14px;
+  color: #00205B;
+}
+
+button {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+button:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+p {
+  font-family: Manrope;
+  margin-bottom: 5vh;
+}
+
+.graph-display{
+  background-color: #F2F2F2;
+  height: 500px;
+  border-radius: 10px;
+  margin-bottom: 5vh;
+
+}
+
+.quote {
+  background-color: #F1F1F1;
+  display: block;
+  padding: 3%;
+  overflow: hidden;
+  font-family: Manrope;
+  font-weight: 400;
+  font-size: 15px;
+  box-shadow: 0;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  margin-bottom: 5vh;
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 1px;
+}
+
+.quote:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}

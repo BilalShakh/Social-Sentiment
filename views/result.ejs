@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+ 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+ 
+  <title>yHacks2019</title>
+ 
+  <!-- Bootstrap core CSS -->
+  <link href="views/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ 
+  <!-- Custom styles for this template -->
+  <link href="views/css/scrolling-nav.css" rel="stylesheet">
+ 
+</head>
+ 
+<body id="page-top">
+ 
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow p-3 mb-5" id="mainNav" style="background-color: #00205B;">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">dataSearchApp</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link js-scroll-trigger" href="#services">Info</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#services">Github</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#contact">Devpost</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+ 
+  <div class="colorbg"style="background-color:#0020A6;height:45vh">
+  </div>
+ 
+  <div class="title">
+    <h1 style="text-align: center;color:white;font-family: Manrope;">Here's what your users think:</h1>
+    <div class="inputbg bg-white">
+      <p style="text-align: left;font-weight: 600;"><span class="part1">Showing results with keywords</span>
+          <small>
+              <span class="keywords">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;" id="kwordBtn" onclick=><%=(data[0].keyword)%></button>
+                  </button>
+                 
+              </span>
+          </small>
+          <span class="part2">from</span>
+          <small>
+              <span class="from-date">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=(data[0].dateFrom)%></button>
+                  </button>
+                 
+              </span>
+          </small>
+          <span class="part3">to</span>
+          <small>
+              <span class="to-date">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=(data[0].dateTo)%></button>
+                  </button>
+                 
+              </span>
+          </small>
+      </p>
+ 
+      <div class="graph-display">
+       
+      </div>
+     
+      <div id="quote-div" class="quote-div">
+      <div class="quote">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+ 
+      <div class="quote">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+    </div>
+ 
+     
+ 
+  </div>
+ 
+</div>
+ 
+  <!-- Footer -->
+  <footer class="py-2" style="background-color:  #00205B;">
+    <div class="container">
+      <p class="m-0 text-center text-white">YHacks 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+ 
+  <!-- Bootstrap core JavaScript -->
+  <script src="views/vendor/jquery/jquery.min.js"></script>
+  <script src="views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ 
+  <!-- Plugin JavaScript -->
+  <script src="views/vendor/jquery-easing/jquery.easing.min.js"></script>
+ 
+  <!-- Custom JavaScript for this theme -->
+  <script src="js/scrolling-nav.js"></script>
+  <script src="js/client.js"></script>
+ 
+</body>
+ 
+</html>
