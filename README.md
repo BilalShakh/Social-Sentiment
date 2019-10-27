@@ -1,4 +1,4 @@
-# JetBlueScraper
+# SocialSentiment
 
 `Coded at YHack 2019`
 
