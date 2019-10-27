@@ -4,9 +4,13 @@ const port = 3000;
 const ejs = require('ejs');
 const multer = require("multer");
 const http = require("http");
-const data = [];
+var data = [];
 const upload =  multer();
-const AIdata = [];
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}...`);
+});
 
 //app.use(express.static("views/vendor/bootstrap/css/bootstrap.min.css"));
 app.use(express.static(__dirname + '/'));
@@ -17,109 +21,178 @@ app.get("/", function(req, res){
 });
 
 app.post("/result", upload.fields([]),function(req, res){
-//   console.log("Requested Data");
+  console.log("Requested Data");
   var keyword = req.body.keyword;
-//   console.log(JSON.stringify(keyword));
+  console.log(JSON.stringify(keyword));
 
   var dateTo = req.body.dateTo;
-//   console.log(JSON.stringify(dateTo));
+  console.log(JSON.stringify(dateTo));
 
   var dateFrom = req.body.dateFrom;
-//   console.log(JSON.stringify(dateFrom));
+  console.log(JSON.stringify(dateFrom));
 
   var inputData = {dateFrom: dateFrom, dateTo: dateTo,keyword:keyword};
-  searchAndReturnTwitter(keyword,dateFrom, (copyAIData) => {
-	AIdata.push(copyAIData);
-	data.push(inputData); 
-	res.redirect("/result");
+  searchAndReturnTwitter(keyword,dateFrom, (output) => {
+	  data[0] = inputData;
+	  data[1] = output;
+	  data[2] = generatePercentage(output.data);
+	//   console.log(output.data);
+	  res.redirect("/result");
   });
-
+//   searchAndReturnReddit(keyword, (output) => {
+// 	  data[0] = inputData;
+// 	  data[1] = output;
+// 	  data[2] = generateLabels(output.data);
+// 	  console.log(data[1]);
+// 	  res.redirect("/result");
+//   });
 });
 
 
 app.get("/result", function(req, res){
-	console.log("Data: \n" + data);
-	console.log("AIData: \n" + AIdata);
-	var returnData = JSON.stringify({data: data, AIdata: AIdata});
-	console.log(returnData);
-	console.log(JSON.parse(returnData).AIdata[0].percentScoreList);
-  	res.render("result", {returnData})
-});
-
-app.listen(port, function (){
-  console.log("Server running");
+	res.render("result", {data})
 });
 
 //Code for Twitter API
-function searchAndReturnTwitter(keyword,untilDate, callback){
-// Test JSON
-const test_json =
-'{"statuses": [{"full_text": "Wow! JetBlue is pretty awesome!"}, {"full_text": "I hate JetBlue, they suck!!!!!"}, {"full_text": "JetBlue changed my life."}]}'
+// This app takes data from twitter, analyzes the text of each tweet, and outputs an object with the data it gathered
+function searchAndReturnTwitter(keyword,untilDate,callback){
+	// Test JSON
+	const test_json =
+	'{"statuses": [{"full_text": "Wow! JetBlue is pretty awesome!"}, {"full_text": "I hate JetBlue, they suck!!!!!"}, {"full_text": "JetBlue changed my life."}]}'
 
-// Initialize Google Cloud
-// Imports the Google Cloud client library
-const language = require('@google-cloud/language');
-  
-// Instantiates a client
-const client = new language.LanguageServiceClient();
-
-// Callback functions
-var error = function (err, response, body) {
-    // console.log('ERROR [%s]', err);
-};
-var success = async function (data) {
-	// console.log("STARTING SUCCESS FUNCTION");
-	// console.log(data);
-	// Takes the data from each tweet's text and stores it in an array
-	var obj = JSON.parse(data);
-	var text = [];
-	var percentScoreList = [];
-	var copyAIData =[];
+	// Initialize Google Cloud
+	// Imports the Google Cloud client library
+	const language = require('@google-cloud/language');
 	
+	// Instantiates a client
+	const client = new language.LanguageServiceClient();
 
-    for (var i = 0; i < obj.statuses.length; i++) {
-		text[i] = obj.statuses[i].full_text;
-		// console.log(text[i]);
+	// Callback functions
+	var error = function (err, response, body) {
+		console.log('ERROR [%s]', err);
+	};
+	var success = async function (data) {
+		// Takes the data from each tweet's text and stores it in an array
+		var obj = JSON.parse(data);
+		console.log(obj);
+		var text = [];
+		for (var i = 0; i < obj.statuses.length; i++) {
+			text[i] = obj.statuses[i].full_text;
+			console.log(text[i]);
+		}
+		
+		console.log(text);
+		var data = [];
+		var overall_text = "";
+		for (var i = 0; i < text.length; i++) {
+			overall_text += text[i];
+			data[i] = analyze(text[i]);
+		}	
+		
+		var overall_data = await analyze(overall_text);
+		var output = {
+			overall_score : overall_data.score,
+			overall_magnitude : overall_data.magnitude,
+			data : await Promise.all(data)
+		}
+	
+		callback(output);
 	}
-	
-	// console.log(text);
-	var data = [];
-	var overall_text = "";
-	for (var i = 0; i < text.length; i++) {
-		overall_text += text[i];
-		data[i] = analyze(text[i]);
-	}	
-	
-	var overall_data = await analyze(overall_text);
-	var output = {
-		overall_score : overall_data.score,
-		overall_magnitude : overall_data.magnitude,
-		data : await Promise.all(data)
-  }
-  
-    percentScoreList=findpercentList(output.data,output.overall_magnitude);
 
-	copyAIData = {percentScoreList : percentScoreList, feeling:findCustomerFeeling(output.overall_score,output.overall_magnitude),overallScore : output.overall_score, overallMagnitude : output.overall_magnitude};
-	console.log('******');
-	console.log(copyAIData);
+	// Language analysis, returns an object containing the text, sentiment score, and sentiment magnitude
+	async function analyze(text) {
+		const document = {
+		content: text,
+		type: 'PLAIN_TEXT',
+		};
+		
+		return client.analyzeSentiment({document})
+			.then(responses => {
+		const response = responses[0];
+				
+				var obj = {
+					text: text,
+					score: response.documentSentiment.score,
+					magnitude: response.documentSentiment.magnitude
+				}
+				return obj;
+			});
+	}
 
-	callback(copyAIData);
-  
+	var Twitter = require('twitter-node-client').Twitter;
 
-	// console.log(output);
+	//Twitter API config
+	var config = {
+		"consumerKey": "N5kpAuGk3i5k29DzpKqVqAayp",
+		"consumerSecret": "0KvDUq0q8wowbCkTBdmQrbNJKSQBUU9E7KwckD5eRiqXgoLgTN",
+		"accessToken": "4824483053-8truFIk1DI7y7t4q0RnxrFf01g16nD7XliPL5dk",
+		"accessTokenSecret": "Ncjpg4ggPvRvEtlQxXCupucthliFbJONLKwiCxpKfFAmR",
+	}
+
+	var twitter = new Twitter(config);
+
+	twitter.getSearch({'q':'JetBlue '+keyword,'count': 100, 'tweet_mode': 'extended','lang':'en','until':untilDate}, error, success);
+
 }
 
-// Language analysis, returns an object containing the text, sentiment score, and sentiment magnitude
-async function analyze(text) {
-    const document = {
-      content: text,
-      type: 'PLAIN_TEXT',
-	};
-	
-	return client.analyzeSentiment({document})
-		.then(responses => {
-      const response = responses[0];
-			
+function searchAndReturnReddit(keyword, callback) {
+	const request = require('request');
+	const qs = require('qs');
+
+	// Initialize Google Cloud
+	// Imports the Google Cloud client library
+	const language = require('@google-cloud/language');
+
+	// Instantiates a client
+	const client = new language.LanguageServiceClient();
+
+	var query = {'q': 'JetBlue ' + keyword};
+
+	var Url = 'https://www.reddit.com/search.json?' + qs.stringify(query);
+
+	var data = request(Url, { json: true }, async function (err, res, body) {
+		if (err) { return console.log(err); }
+
+		var self_text = [];
+		var title = [];
+		for (var i = 0; i < body.data.children.length; i++) {
+			self_text[i] = body.data.children[i].data.selftext;
+			title[i] = body.data.children[i].data.title;
+			// console.log(self_text[i] + title[i]);
+		}
+
+		var data = [];
+		var overall_text = "";
+
+		for (var i = 0; i < body.data.children.length; i += 2) {
+			overall_text += " " + title[i];
+			overall_text += " " + self_text[i];
+			data[i] = analyze(title[i]);
+			data[i+1] = analyze(self_text[i]);
+		}
+
+		// console.log(self_text);
+
+		var overall_data = await analyze(overall_text);
+		var output = {
+			overall_score : overall_data.score,
+			overall_magnitude : overall_data.magnitude,
+			data : await Promise.all(data)
+		}
+
+		console.log(output);
+	});
+
+	async function analyze(text) {
+		const document = {
+		content: text,
+		type: 'PLAIN_TEXT',
+		};
+		
+		return client.analyzeSentiment({document})
+			.then(responses => {
+		const response = responses[0];
+				
 			var obj = {
 				text: text,
 				score: response.documentSentiment.score,
@@ -127,135 +200,47 @@ async function analyze(text) {
 			}
 			return obj;
 		});
-}
+	}
+	}
 
-var Twitter = require('twitter-node-client').Twitter;
+	function generatePercentage(data,magnitude){
+		var temp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-//Twitter API config
-var config = {
-    "consumerKey": "N5kpAuGk3i5k29DzpKqVqAayp",
-    "consumerSecret": "0KvDUq0q8wowbCkTBdmQrbNJKSQBUU9E7KwckD5eRiqXgoLgTN",
-    "accessToken": "4824483053-8truFIk1DI7y7t4q0RnxrFf01g16nD7XliPL5dk",
-    "accessTokenSecret": "Ncjpg4ggPvRvEtlQxXCupucthliFbJONLKwiCxpKfFAmR",
-}
+		data.forEach(element => {
+			console.log(Math.floor((element.score+1)/2*10));
+			temp[Math.floor((element.score+1)/2*10)]++;
+		});
 
-var twitter = new Twitter(config);
+		var labels = [];
 
-twitter.getSearch({'q':'JetBlue '+keyword,'count': 5, 'tweet_mode': 'extended','lang':'en','until':untilDate}, error, success);
-
-}
-
-function findpercentList(data,magnitude){
-	let rawScoreList = [];
-	let percentScoreList = [];
-	let ScoreList= [];
-	let numScorers = [];
-
-	for (var key in data){
-    	  rawScoreList.push(data[key].score);
-   }
-
-   for (var i=0;i < 10;i++){
-	   numScorers.push(0);
-   }
-
-   
-
-   console.log('""""""""""""""');
-   console.log(rawScoreList);
-   var totalNumScorers=0;
-   for(var i in rawScoreList){
-	   i = rawScoreList[i];
-	   console.log(i);
-	   if(rawScoreList[i]>=-1 &&i <-0.8){
-		   numScorers[0]++;
-		   totalNumScorers++;
-		   console.log(numScorers);
-		   console.log(totalNumScorers);
-	   }
-	   else if(i>=-0.8&& i<-0.6){
-		   numScorers[1]++;
-		   totalNumScorers++;
-		   console.log(numScorers);
-		   console.log(totalNumScorers);
-	   }
-	   else if(i>=-0.6&&i<-0.4){
-		   numScorers[2]++;
-		   totalNumScorers++;
-		   console.log(numScorers);
-		   console.log(totalNumScorers);
-	   }
-	   else if(i>=-0.4&&i<-0.2){
-			numScorers[3]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
+		for (var i = 0; i < temp.length; i++) {
+			labels[i] = temp[i] / data.length;
 		}
-		else if(i>=-0.2&&i<0){
-			numScorers[4]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
-		}
-		else if(i>=0&&i<0.2){
-			numScorers[5]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
-		}
-		else if(i>=0.2&&i<0.4){
-			numScorers[6]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
-		}
-		else if(i>=0.4&&i<0.6){
-			numScorers[7]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
-		}
-		else if(i>=0.6&&i<0.8){
-			numScorers[8]++;
-			totalNumScorers++;
-			console.log(numScorers);
-			console.log(totalNumScorers);
-		}
-		else if(i>=0.8&&i<=1){
-			numScorers[9]++;
-			totalNumScorers++;
-		}
-   }
-   console.log('""""""""""""""');
-   console.log(numScorers);
-   console.log(totalNumScorers);
 
-   for (var i in numScorers){
-	   percentScoreList.push((numScorers[i]/totalNumScorers)*100);
-   }
+		console.log(labels);
 
-   return percentScoreList;
-}
-
-function findCustomerFeeling(overall_score,magnitude){
+		return labels;
+	}
 	
-	if(overall_score<=1&&overall_score>0.6){
-		return "Very Good";
+	function findCustomerFeeling(overall_score,magnitude){
+		
+		if(overall_score<=1&&overall_score>0.6){
+			return "Very Good";
+		}
+		else if(overall_score<=0.6&&overall_score>0.2){
+			return "Good";
+		}
+		else if(overall_score<=0.2&&overall_score>=-0.2){
+			if(magnitude>=4)
+				return "Mixed";
+			else
+				return "Neutral";
+		}
+		else if(overall_score<-0.2&&overall_score>=-0.6){
+			return "Bad";
+		}
+		else if(overall_score<-0.6&&overall_score>=-1){
+			return "Very Bad";
+		}
+	
 	}
-	else if(overall_score<=0.6&&overall_score>0.2){
-		return "Good";
-	}
-	else if(overall_score<=0.2&&overall_score>=-0.2){
-		if(magnitude>=4)
-			return "Mixed";
-		else
-			return "Neutral";
-	}
-	else if(overall_score<-0.2&&overall_score>=-0.6){
-		return "Bad";
-	}
-	else if(overall_score<-0.6&&overall_score>=-1){
-		return "Very Bad";
-	}
-
-}

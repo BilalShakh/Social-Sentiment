@@ -53,7 +53,7 @@
       <p style="text-align: left;font-weight: 600;"><span class="part1">Showing results with keywords</span>
           <small>
               <span class="keywords">
-                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;" id="kwordBtn" onclick=><%=(JSON.parse(returnData).data[0].keyword)%></button>
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;" id="kwordBtn" onclick=><%=data[0].keyword%></button>
                   </button>
                  
               </span>
@@ -61,7 +61,7 @@
           <span class="part2">from</span>
           <small>
               <span class="from-date">
-                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=(JSON.parse(returnData).data[0].dateFrom)%></button>
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=data[0].dateFrom%></button>
                   </button>
                  
               </span>
@@ -69,7 +69,7 @@
           <span class="part3">to</span>
           <small>
               <span class="to-date">
-                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=(JSON.parse(returnData).data[0].dateTo)%></button>
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=data[0].dateTo%></button>
                   </button>
                  
               </span>
@@ -77,8 +77,8 @@
       </p>
       <div class="overall-stats" style="text-align: center">
             <p style="text-align: center;font-weight: 800;color: grey;font-size: 18px;">Overall Rating</p>
-      <p style="margin-top: -40px;"><span name="avgSenVal"style="text-align: center;font-weight: 800;color: #00205B;font-size: 50px;margin-top: -40px;"><%=(JSON.parse(returnData).AIdata[0].overallScore).toFixed(1)%> </span>
-        <span style="text-align: center;font-weight: 400;color: #00205B;font-size: 50px;"><%=JSON.parse(returnData).AIdata[0].feeling%></span>
+      <p style="margin-top: -40px;"><span name="avgSenVal"style="text-align: center;font-weight: 800;color: #00205B;font-size: 50px;margin-top: -40px;"><%=data[1].overallScore%> </span>
+        <span style="text-align: center;font-weight: 400;color: #00205B;font-size: 50px;"><%=data[1].feeling%></span>
         </p>
  
        
@@ -92,78 +92,80 @@
     <script src="/node_modules/chart.js/dist/Chart.min.js"></script>
 
     <script>
-Chart.defaults.global.defaultFontFamily = "Manrope";
-Chart.defaults.global.defaultFontStyle = 800;
-Chart.defaults.global.defaultFontColor = "black";
- 
-var ctx = document.getElementById('myChart').getContext('2d');
+      Chart.defaults.global.defaultFontFamily = "Manrope";
+      Chart.defaults.global.defaultFontStyle = 800;
+      Chart.defaults.global.defaultFontColor = "black";
+      
+      var ctx = document.getElementById('myChart').getContext('2d');
 
-window.chart = require('chart.js');
-<% var data = JSON.parse(returnData).AIdata[0].percentScoreList; %>
-<%console.log(data);%>
-<%var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: [-1.0, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8],
-        datasets: [{
-            label: 'Percent of People',
-            data: data,
-            backgroundColor: [
-                '#455C87',
-                '#455C87',
-                '#173469',
-                '#173469',
-                '#001843',
-                '#001843',
-                '#001843',
-                '#000F2A',
-                '#000F2A',
-                '#000919',
-                '#000919',
-            ]
-           
-        }]
-    },
-    options: {
-        legend: {
-            display: false,
-       
-        },
-        scales: {
-            xAxes: [{
-               
-                categoryPercentage: 1.0,
-                barPercentage: 1.0,
-                gridLines: {
-                    offsetGridLines: true
-                },
-                scaleLabel:{
-                    display:true,
-                    labelString: 'Rating'
-               
-                },
-                ticks: {
-                   
-                    max: 1.0,
-                    min: -1.0,
-                    stepSize: 0.2
- 
-                }
- 
-            }],
-            yAxes: [{
-                scaleLabel:{
-                    display:true,
-                    labelString: 'Percentage of People'
-                },
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});%>
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [-1.0, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0],
+              datasets: [{
+                  label: 'Percent of People',
+                  data: <%- JSON.stringify(data[2]); %>,
+                  backgroundColor: [
+                      '#455C87',
+                      '#455C87',
+                      '#173469',
+                      '#173469',
+                      '#001843',
+                      '#001843',
+                      '#001843',
+                      '#000F2A',
+                      '#000F2A',
+                      '#000919',
+                      '#000919'
+                  ]
+                
+              }]
+          },
+          options: {
+              legend: {
+                  display: false,
+            
+              },
+              scales: {
+                  xAxes: [{
+                    
+                      categoryPercentage: 1.0,
+                      barPercentage: 1.0,
+                      gridLines: {
+                          offsetGridLines: true
+                      },
+                      scaleLabel:{
+                          display:true,
+                          labelString: 'Rating'
+                    
+                      },
+                      ticks: {
+                        
+                          max: 1.0,
+                          min: -1.0,
+                          stepSize: 0.2
+      
+                      }
+      
+                  }],
+                  yAxes: [{
+                      scaleLabel:{
+                          display:true,
+                          labelString: 'Percentage of People'
+                      },
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
     </script>
+
+    <script>
+
+    </script>
+  }
  
       </div>
      
