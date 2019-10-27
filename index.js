@@ -35,7 +35,8 @@ app.post("/result", upload.fields([]),function(req, res){
   searchAndReturnTwitter(keyword,dateFrom, (output) => {
 	  data[0] = inputData;
 	  data[1] = output;
-	  data[2] = generatePercentage(output.data);
+	  data[2] = generatePercentage(output.data)
+	  data[3] = findCustomerFeeling(output.overall_score);
 	//   console.log(output.data);
 	  res.redirect("/result");
   });
