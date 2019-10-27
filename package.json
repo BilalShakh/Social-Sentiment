@@ -3,6 +3,7 @@
         "start": "node index.js"
     },
     "dependencies": {
+        "@google-cloud/language": "^3.5.1",
         "ejs": "^2.7.1",
         "express": "^4.17.1",
         "fetch": "^1.1.0",
