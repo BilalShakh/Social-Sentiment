@@ -15,9 +15,16 @@ A web-app made designed for the JetBlue challenge at YHack 2019. The challenge w
 
 # How to Run
 
+```
 npm install twitter-node-client  
 npm install --save @google-cloud/language  
 
 set GOOGLE_APPLICATION_CREDENTIALS=C:\Users\crmur\Documents\_YHack\password.json
+```
+
+1. Enter a keyword. The current keyword style is "JetBlue" + "keyword".
+2. (Optional) Pick a Starting date and/or an Ending date. If no Ending date is entered it is defaulted to today.
+3. A graph will be displayed and an average rating will be calculated from the internet posts.
+4. Click on an area of the graph to display the text analyzed within the range of the bar graph. 
 
 # F.A.Q
