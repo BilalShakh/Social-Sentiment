@@ -13,7 +13,7 @@ A web-app made designed for the JetBlue challenge at YHack 2019. The challenge w
 * Back-end built with __nodeJS__ and __ExpressJS__
 * Uses the __Twitter__ and __Reddit API__ to search for posts containing the keyword(s).
 
-# How to Run
+# How to Run/Use
 
 ```
 npm install twitter-node-client  
