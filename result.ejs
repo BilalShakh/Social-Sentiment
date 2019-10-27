@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+ 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+ 
+  <title>yHacks2019</title>
+ 
+  <!-- Bootstrap core CSS -->
+  <link href="views/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ 
+  <!-- Custom styles for this template -->
+  <link href="views/css/scrolling-nav.css" rel="stylesheet">
+ 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+ 
+<body id="page-top">
+ 
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow p-3 mb-5" id="mainNav" style="background-color: #00205B;">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">dataSearchApp</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link js-scroll-trigger" href="#services">Info</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#services">Github</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#contact">Devpost</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+ 
+  <div class="colorbg"style="background-color:#0020A6;height:45vh">
+  </div>
+ 
+  <div class="title">
+    <h1 style="text-align: center;color:white;font-family: Manrope;">Here's what your customers think:</h1>
+    <div class="inputbg bg-white">
+      <p style="text-align: left;font-weight: 600;"><span class="part1">Showing results with keywords</span>
+          <small>
+              <span class="keywords">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;" id="kwordBtn" onclick=><%=data[0].keyword%></button>
+                  </button>
+                 
+              </span>
+          </small>
+          <span class="part2">from</span>
+          <small>
+              <span class="from-date">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=data[0].dateFrom%></button>
+                  </button>
+                 
+              </span>
+          </small>
+          <span class="part3">to</span>
+          <small>
+              <span class="to-date">
+                  <button class="btn btn-primary" style="margin-left:0.5vw;margin-right: 0.5vw;"><%=data[0].dateTo%></button>
+                  </button>
+                 
+              </span>
+          </small>
+      </p>
+      <div class="overall-stats" style="text-align: center">
+            <p style="text-align: center;font-weight: 800;color: grey;font-size: 18px;">Overall Rating</p>
+      <p style="margin-top: -40px;"><span name="avgSenVal"style="text-align: center;font-weight: 800;color: #00205B;font-size: 50px;margin-top: -40px;"><%=data[3]%> </span>
+        <span style="text-align: center;font-weight: 400;color: #00205B;font-size: 50px;"><%=data[1].overall_score%></span>
+        </p>
+ 
+       
+       
+           
+      <div class="graph-display" style="padding: 3vw;">
+       
+      <div><canvas id="myChart"></canvas></div>
+        <p class="rating-guide">[-1.0 -> -0.8] Very Bad ⁠— [-0.6 -> -0.4] Bad ⁠— [-0.2 -> +0.2] Neutral ⁠— [+0.4 -> 0.6] Good ⁠— [+0.8 -> 1.0] Very Good</p>
+    
+    <script src="/node_modules/chart.js/dist/Chart.min.js"></script>
+
+    <script>
+      Chart.defaults.global.defaultFontFamily = "Manrope";
+      Chart.defaults.global.defaultFontStyle = 800;
+      Chart.defaults.global.defaultFontColor = "black";
+      
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [-1.0, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0],
+              datasets: [{
+                  label: 'Percent of People',
+                  data: <%- JSON.stringify(data[2]); %>,
+                  backgroundColor: [
+                      '#455C87',
+                      '#455C87',
+                      '#173469',
+                      '#173469',
+                      '#001843',
+                      '#001843',
+                      '#001843',
+                      '#000F2A',
+                      '#000F2A',
+                      '#000919',
+                      '#000919'
+                  ]
+                
+              }]
+          },
+          options: {
+              legend: {
+                  display: false,
+            
+              },
+              scales: {
+                  xAxes: [{
+                    
+                      categoryPercentage: 1.0,
+                      barPercentage: 1.0,
+                      gridLines: {
+                          offsetGridLines: true
+                      },
+                      scaleLabel:{
+                          display:true,
+                          labelString: 'Rating'
+                    
+                      },
+                      ticks: {
+                        
+                          max: 1.0,
+                          min: -1.0,
+                          stepSize: 0.2
+      
+                      }
+      
+                  }],
+                  yAxes: [{
+                      scaleLabel:{
+                          display:true,
+                          labelString: 'Percentage of People'
+                      },
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
+    </script>
+
+    <script>
+
+    </script>
+  }
+ 
+      </div>
+     
+     
+           
+           
+           
+      </div>
+     
+ 
+     
+      <div id="quote-div" class="quote-div">
+      <div class="quote">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+ 
+      <div class="quote">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+    </div>
+    
+ 
+     
+ 
+  </div>
+ 
+</div>
+ 
+ 
+  <!-- Footer -->
+  <footer class="py-2" style="background-color:  #00205B;">
+    <div class="container">
+      <p class="m-0 text-center text-white">YHacks 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+ 
+  <!-- Bootstrap core JavaScript -->
+  <script src="views/vendor/jquery/jquery.min.js"></script>
+  <script src="views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ 
+  <!-- Plugin JavaScript -->
+  <script src="views/vendor/jquery-easing/jquery.easing.min.js"></script>
+ 
+ 
+  <!-- Custom JavaScript for this theme -->
+  <script src="js/scrolling-nav.js"></script>
+  <script src="js/client.js"></script>
+  <script src="generate-quote.js"></script>
+ 
+ 
+</body>
+ 
+</html>
