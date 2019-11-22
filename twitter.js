@@ -66,10 +66,10 @@ var Twitter = require('twitter-node-client').Twitter;
 
 //Twitter API config
 var config = {
-    "consumerKey": "N5kpAuGk3i5k29DzpKqVqAayp",
-    "consumerSecret": "0KvDUq0q8wowbCkTBdmQrbNJKSQBUU9E7KwckD5eRiqXgoLgTN",
-    "accessToken": "4824483053-8truFIk1DI7y7t4q0RnxrFf01g16nD7XliPL5dk",
-    "accessTokenSecret": "Ncjpg4ggPvRvEtlQxXCupucthliFbJONLKwiCxpKfFAmR",
+    "consumerKey": "//",
+    "consumerSecret": "//",
+    "accessToken": "//",
+    "accessTokenSecret": "//",
 }
 
 var twitter = new Twitter(config);
